@@ -38,30 +38,6 @@ if (!isset($_SESSION['nombre'])) {
             <div class="col-md-12">
                 <div class="panel-body table-responsive" id="listadoregistros">
                     <div id="tableArticulo"></div>
-                    <!-- <table id="tbllistado" class="table table-striped table-bordered table-condensed table-hover">
-                            <thead>
-                                <th>Opciones</th>
-                                <th>Nombre</th>
-                                <th>Categoria</th>
-                                <th>Codigo</th>
-                                <th>Stock</th>
-                                <th>Imagen</th>
-                                <th>Descripcion</th>
-                                <th>Estado</th>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                            <tfoot>
-                                <th>Opciones</th>
-                                <th>Nombre</th>
-                                <th>Categoria</th>
-                                <th>Codigo</th>
-                                <th>Stock</th>
-                                <th>Imagen</th>
-                                <th>Descripcion</th>
-                                <th>Estado</th>
-                            </tfoot>
-                        </table> -->
                 </div>
                 <div class="card card-success" id="formularioregistros">
                     <div class="card-header">

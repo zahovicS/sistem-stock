@@ -35,13 +35,13 @@ const init = () => {
 
 //funcion limpiar
 const limpiar = (_) => {
-  inputCodigo.val = ''
-  inputNombre.val = ''
-  inputDescripcion.val = ''
-  inputStock.val = ''
+  inputCodigo.value = ''
+  inputNombre.value = ''
+  inputDescripcion.value = ''
+  inputStock.value = ''
   imagenmuestra.attributes.src = ''
-  inputImagenactual.val = ''
-  inputCodigoArticulo.val = ''
+  inputImagenactual.value = ''
+  inputCodigoArticulo.value = ''
   hide(imagenmuestra)
 }
 
@@ -154,15 +154,14 @@ const mostrar = (idarticulo) => {
     })
     .then((data) => {
       mostrarform(true)
-      $('#idcategoria').val(data.idcategoria)
-      $('#codigo').val(data.codigo)
-      $('#nombre').val(data.nombre)
-      $('#stock').val(data.stock)
-      $('#descripcion').val(data.descripcion)
-      $('#imagenmuestra').show()
-      $('#imagenmuestra').attr('src', '../files/articulos/' + data.imagen)
-      $('#imagenactual').val(data.imagen)
-      $('#idarticulo').val(data.idarticulo)
+      selectCategoria.value = data.idcategoria
+      inputCodigo.value = data.codigo
+      inputNombre.value = data.nombre
+      inputDescripcion.value = data.descripcion
+      inputStock.value = data.stock
+      imagenmuestra.attributes.src = '../files/articulos/' + data.imagen
+      inputImagenactual.value = data.imagen
+      inputCodigoArticulo.value = data.idarticulo
     })
 }
 //funcion para desactivar
