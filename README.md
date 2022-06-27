@@ -28,6 +28,6 @@ Un pequeño sistema en PHP 7 para pequeñas empresas.
   - Descomprimirlo en un servidor como XAMPP, Laragon o el de su preferencia.
   - Importar la Base de datos que está en la carpeta DB.
   - Modificar los accesos a la DB en la carpeta config/global.php
-  - Entrar al sistema. 
+  - Entrar al sistema user: admin - pass: admin. 
 ```
     
