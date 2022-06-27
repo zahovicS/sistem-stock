@@ -9,74 +9,79 @@
       content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
       name="viewport"
     />
-    <!-- Bootstrap 3.3.7 -->
-    <link rel="stylesheet" href="../public/css/bootstrap.min.css" />
     <!-- Font Awesome -->
-
-    <link rel="stylesheet" href="../public/css/font-awesome.min.css" />
-
-    <link rel="stylesheet" href="../public/css/AdminLTE.min.css" />
-    <link rel="stylesheet" href="../public/css/_all-skins.min.css" />
+    <link
+      rel="stylesheet"
+      href="../public/plugins/fontawesome-free/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../public/css/adminlte.min.css" />
     <!-- Morris chart -->
     <!-- Daterange picker -->
   </head>
   <body class="hold-transition login-page">
     <div class="login-box">
-      <div class="login-logo">
-        <a href="../../index2.html"><b>SIS</b>Ventas</a>
-      </div>
       <!-- /.login-logo -->
-      <div class="login-box-body">
-        <p class="login-box-msg">Ingresa tus datos de Acceso</p>
-
-        <form method="post" id="frmAcceso">
-          <div class="form-group has-feedback">
-            <input
-              type="text"
-              id="logina"
-              name="logina"
-              class="form-control"
-              placeholder="Usuario"
-            />
-            <span class="fa fa-user form-control-feedback"></span>
-          </div>
-          <div class="form-group has-feedback">
-            <input
-              type="password"
-              id="clavea"
-              name="clavea"
-              class="form-control"
-              placeholder="Password"
-            />
-            <span class="fa fa-key form-control-feedback"></span>
-          </div>
-          <div class="row">
-            <div class="col-xs-8"></div>
-            <!-- /.col -->
-            <div class="col-xs-4">
-              <button type="submit" class="btn btn-primary btn-block btn-flat">
-                Ingresar
-              </button>
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a href="../../index2.html" class="h1"><b>Sistem</b>Ventas</a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Ingresa tus datos de Acceso</p>
+          <form id="frmAcceso" action="#!" method="post">
+            <div class="input-group mb-3">
+              <input
+                type="text"
+                id="logina"
+                name="logina"
+                class="form-control"
+                placeholder="Usuario"
+              />
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
             </div>
-            <!-- /.col -->
-          </div>
-        </form>
+            <div class="input-group mb-3">
+              <input
+                type="password"
+                id="clavea"
+                name="clavea"
+                class="form-control"
+                placeholder="Password"
+              />
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <i class="fas fa-lock"></i>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-8">
+                <!-- <div class="icheck-primary">
+                  <input type="checkbox" id="remember" />
+                  <label for="remember"> Remember Me </label>
+                </div> -->
+              </div>
+              <!-- /.col -->
+              <div class="col-4">
+                <button type="submit" class="btn btn-primary btn-block">
+                  Ingresar
+                </button>
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+        </div>
+        <!-- /.card-body -->
       </div>
-      <!-- /.login-box-body -->
+      <!-- /.card -->
     </div>
     <!-- /.login-box -->
-
-    <!-- jQuery 3 -->
-    <script
-      src="https://code.jquery.com/jquery-3.6.0.min.js"
-      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-      crossorigin="anonymous"
-    ></script>
-    <!-- jQuery UI 1.11.4 -->
-    <!-- Bootstrap 3.3.7 -->
-    <script src="../public/js/bootstrap.min.js"></script>
-    <script src="../public/js/bootbox.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="../public/plugins/jquery/jquery.min.js"></script>
+    <script src="../public/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../public/js/adminlte.min.js"></script>
     <script src="scripts/login.js"></script>
-    <!-- iCheck -->
   </body>
 </html>

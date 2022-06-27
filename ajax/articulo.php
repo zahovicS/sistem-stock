@@ -4,7 +4,6 @@ header('Access-Control-Allow-Origin: *');
 require_once "../modelos/Articulo.php";
 
 $articulo = new Articulo();
-// $_POST = json_decode(file_get_contents('php://input'), true);
 $idarticulo = isset($_POST["idarticulo"]) ? limpiarCadena($_POST["idarticulo"]) : "";
 $idcategoria = isset($_POST["idcategoria"]) ? limpiarCadena($_POST["idcategoria"]) : "";
 $codigo = isset($_POST["codigo"]) ? limpiarCadena($_POST["codigo"]) : "";
@@ -15,8 +14,6 @@ $imagen = isset($_POST["imagen"]) ? limpiarCadena($_POST["imagen"]) : "";
 
 switch ($_GET["op"]) {
 	case 'guardaryeditar':
-		echo json_encode($_POST);
-		return;
 		if (!file_exists($_FILES['imagen']['tmp_name']) || !is_uploaded_file($_FILES['imagen']['tmp_name'])) {
 			$imagen = $_POST["imagenactual"];
 		} else {
@@ -63,7 +60,7 @@ switch ($_GET["op"]) {
 				"stock" => $reg->stock,
 				"img" => "<img src='../files/articulos/" . $reg->imagen . "' height='50px' width='50px'>",
 				"desc" => $reg->descripcion,
-				"est" => ($reg->condicion) ? '<span class="badge badge-success">Activado</span>' : '<span class="badge badge-success">Desactivado</span>'
+				"est" => ($reg->condicion) ? '<span class="badge badge-success">Activado</span>' : '<span class="badge badge-danger">Desactivado</span>'
 			);
 		}
 		$results = array(

@@ -23,11 +23,6 @@ const init = () => {
   //cargamos los items al celect categoria
   fetch('../ajax/articulo.php?op=selectCategoria', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json, text-plain, */*',
-      'X-Requested-With': 'XMLHttpRequest',
-    },
   })
     .then((response) => {
       return response.text()
@@ -64,12 +59,12 @@ const mostrarform = (flag) => {
     show(btnagregar, 'inline-block')
   }
 }
-
 //cancelar form
 const cancelarform = (_) => {
   limpiar()
   mostrarform(false)
 }
+//listar productos
 const listar = () => {
   tablaArticulo = new gridjs.Grid({
     columns: [
@@ -131,11 +126,6 @@ function guardaryeditar(e) {
   const formData = new FormData(formulario)
   fetch('../ajax/articulo.php?op=guardaryeditar', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json, text-plain, */*',
-      'X-Requested-With': 'XMLHttpRequest',
-    },
     body: formData,
   })
     .then((response) => {
@@ -146,22 +136,18 @@ function guardaryeditar(e) {
         icon: 'success',
         title: data,
       })
-      // mostrarform(false)
-      // tablaArticulo.forceRender()
+      mostrarform(false)
+      tablaArticulo.forceRender()
     })
-  // limpiar()
+  limpiar()
 }
+//mostrar producto
 const mostrar = (idarticulo) => {
+  let formData = new FormData()
+  formData.append('idarticulo', idarticulo)
   fetch('../ajax/articulo.php?op=mostrar', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json, text-plain, */*',
-      'X-Requested-With': 'XMLHttpRequest',
-    },
-    body: JSON.stringify({
-      idarticulo: idarticulo,
-    }),
+    body: formData,
   })
     .then((response) => {
       return response.json()
@@ -169,7 +155,6 @@ const mostrar = (idarticulo) => {
     .then((data) => {
       mostrarform(true)
       $('#idcategoria').val(data.idcategoria)
-      // $('#idcategoria').selectpicker('refresh')
       $('#codigo').val(data.codigo)
       $('#nombre').val(data.nombre)
       $('#stock').val(data.stock)
@@ -178,10 +163,8 @@ const mostrar = (idarticulo) => {
       $('#imagenmuestra').attr('src', '../files/articulos/' + data.imagen)
       $('#imagenactual').val(data.imagen)
       $('#idarticulo').val(data.idarticulo)
-      // generarbarcode()
     })
 }
-
 //funcion para desactivar
 const desactivar = (idarticulo) => {
   Swal.fire({
@@ -193,16 +176,11 @@ const desactivar = (idarticulo) => {
   }).then((result) => {
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
+      let formData = new FormData()
+      formData.append('idarticulo', idarticulo)
       fetch('../ajax/articulo.php?op=desactivar', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json, text-plain, */*',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        body: JSON.stringify({
-          idarticulo: idarticulo,
-        }),
+        body: formData,
       })
         .then((response) => {
           return response.text()
@@ -223,21 +201,16 @@ const activar = (idarticulo) => {
     title: '¿Esta seguro de activar este dato?',
     icon: 'question',
     showCancelButton: true,
-    confirmButtonText: 'Desactivar',
+    confirmButtonText: 'Activar',
     cancelButtonText: 'Cancelar',
   }).then((result) => {
     /* Read more about isConfirmed, isDenied below */
     if (result.isConfirmed) {
+      let formData = new FormData()
+      formData.append('idarticulo', idarticulo)
       fetch('../ajax/articulo.php?op=activar', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json, text-plain, */*',
-          'X-Requested-With': 'XMLHttpRequest',
-        },
-        body: JSON.stringify({
-          idarticulo: idarticulo,
-        }),
+        body: formData,
       })
         .then((response) => {
           return response.text()
@@ -253,14 +226,9 @@ const activar = (idarticulo) => {
   })
 }
 
-function generarbarcode() {
-  codigo = $('#codigo').val()
-  JsBarcode('#barcode', codigo)
-  $('#print').show()
-}
-
-function imprimir() {
-  $('#print').printArea()
+const generarbarcode = (_) => {
+  const codigo = Math.floor(Math.random() * 9999999999 + 1)
+  inputCodigo.value = codigo
 }
 
 init()

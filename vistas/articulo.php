@@ -101,7 +101,7 @@ if (!isset($_SESSION['nombre'])) {
                                                 onclick="generarbarcode()">Generar</button>
                                         </div>
                                         <input class="form-control form-control-border border-width-2" type="text"
-                                            name="codigo" id="codigo" placeholder="codigo del prodcuto" required>
+                                            name="codigo" id="codigo" placeholder="código del prodccto" required>
                                     </div>
                                 </div>
                                 <div class="form-group col-lg-12">
@@ -134,8 +134,6 @@ if (!isset($_SESSION['nombre'])) {
     }
     require 'footer.php'
     ?>
-<script src="../public/js/JsBarcode.all.min.js"></script>
-<script src="../public/js/jquery.PrintArea.js"></script>
 <script src="scripts/articulo.js"></script>
 
 <?php

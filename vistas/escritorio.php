@@ -71,7 +71,7 @@ if (!isset($_SESSION['nombre'])) {
     </div>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-6 col-6">
+            <div class="col-lg-6 col-12">
                 <!-- small card -->
                 <div class="small-box bg-info">
                     <div class="inner">
@@ -86,7 +86,7 @@ if (!isset($_SESSION['nombre'])) {
                     </a>
                 </div>
             </div>
-            <div class="col-lg-6 col-6">
+            <div class="col-lg-6 col-12">
                 <!-- small card -->
                 <div class="small-box bg-success">
                     <div class="inner">
@@ -103,7 +103,7 @@ if (!isset($_SESSION['nombre'])) {
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 col-12">
                 <div class="card">
                     <div class="card-header border-0">
                         <div class="d-flex justify-content-between">
@@ -116,7 +116,7 @@ if (!isset($_SESSION['nombre'])) {
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 col-12">
                 <div class="card">
                     <div class="card-header border-0">
                         <div class="d-flex justify-content-between">
