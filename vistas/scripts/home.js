@@ -71,3 +71,8 @@ const show = (e, custom = null) => {
   }
   e.style.display = 'block'
 }
+const remove = (el) => {
+  Array.from(el).forEach(function (element) {
+    element.remove()
+  })
+}

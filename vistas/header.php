@@ -27,6 +27,10 @@
      <!-- Sweet Alert -->
      <link rel="stylesheet" href="../public/plugins/sweetalert2/sweetalert2.min.css" />
      <link rel="stylesheet" href="../public/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css" />
+     <!-- Select 2 -->
+     <link rel="stylesheet" href="../public/plugins/select2/css/select2.min.css" />
+     <link rel="stylesheet" href="../public/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css" />
+
  </head>
  <!-- dark-mode -->
 
@@ -60,7 +64,7 @@
          <!-- Main Sidebar Container -->
          <aside class="main-sidebar elevation-4 sidebar-dark-teal">
              <!-- Brand Logo -->
-             <a href="index3.html" class="brand-link">
+             <a href="javascript:void(0)" class="brand-link">
                  <img src="../public/img/AdminLTELogo.png" alt="AdminLTE Logo"
                      class="brand-image img-circle elevation-3" style="opacity: 0.8" />
                  <span class="brand-text font-weight-light">SIS VENTAS</span>

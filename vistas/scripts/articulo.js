@@ -120,7 +120,7 @@ const listar = () => {
   }).render(tableArticuloHTML)
 }
 //funcion para guardaryeditar
-function guardaryeditar(e) {
+const guardaryeditar = (e) => {
   e.preventDefault() //no se activara la accion predeterminada
   btnGuardar.disabled = true
   const formData = new FormData(formulario)

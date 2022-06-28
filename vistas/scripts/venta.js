@@ -1,283 +1,389 @@
-var tabla;
+const btnGuardar = document.querySelector('#btnGuardar'),
+  btnCancelar = document.querySelector('#btnCancelar'),
+  btnagregar = document.querySelector('#btnagregar'),
+  btnAgregarArt = document.querySelector('#btnAgregarArt'),
+  tableVentasHTML = document.querySelector('#tbllistado'),
+  tableArticuloHTML = document.querySelector('#tblarticulos'),
+  listadoregistros = document.querySelector('#listadoregistros'),
+  formularioregistros = document.querySelector('#formularioregistros'),
+  formulario = document.querySelector('#formulario'),
+  inputClient = document.querySelector('#idcliente'),
+  inputTipoComprobante = document.querySelector('#tipo_comprobante'),
+  inputSerie = document.querySelector('#serie_comprobante'),
+  inputNumeroC = document.querySelector('#num_comprobante'),
+  inputImpuesto = document.querySelector('#impuesto'),
+  inputTotalVenta = document.querySelector('#total_venta'),
+  filasTablaVenta = document.querySelectorAll('.filas'),
+  totalText = document.querySelector('#total'),
+  inputFecha = document.querySelector('#fecha_hora'),
+  idventa = document.querySelector('#idventa'),
+  tablaDetalle = document.querySelector('#detalles')
 
+//declaramos variables necesarias para trabajar con las compras y sus detalles
+let tablaVenta,
+  tblarticulos,
+  impuesto = 18,
+  cont = 0,
+  detalles = 0
 //funcion que se ejecuta al inicio
-function init(){
-   mostrarform(false);
-   listar();
+const init = () => {
+  mostrarform(false)
+  listar()
 
-   $("#formulario").on("submit",function(e){
-   	guardaryeditar(e);
-   });
+  formulario.addEventListener('submit', (e) => {
+    guardaryeditar(e)
+  })
 
-   //cargamos los items al select cliente
-   $.post("../ajax/venta.php?op=selectCliente", function(r){
-   	$("#idcliente").html(r);
-   	$('#idcliente').selectpicker('refresh');
-   });
-
+  fetch('../ajax/venta.php?op=selectCliente', {
+    method: 'POST',
+  })
+    .then((response) => {
+      return response.text()
+    })
+    .then((data) => {
+      inputClient.innerHTML = data
+      //   $('#idcliente').select2({
+      //     theme: 'bootstrap4',
+      //   })
+    })
 }
 
 //funcion limpiar
-function limpiar(){
-
-	$("#idcliente").val("");
-	$("#cliente").val("");
-	$("#serie_comprobante").val("");
-	$("#num_comprobante").val("");
-	$("#impuesto").val("");
-
-	$("#total_venta").val("");
-	$(".filas").remove();
-	$("#total").html("0");
-
-	//obtenemos la fecha actual
-	var now = new Date();
-	var day =("0"+now.getDate()).slice(-2);
-	var month=("0"+(now.getMonth()+1)).slice(-2);
-	var today=now.getFullYear()+"-"+(month)+"-"+(day);
-	$("#fecha_hora").val(today);
-
-	//marcamos el primer tipo_documento
-	$("#tipo_comprobante").val("Boleta");
-	$("#tipo_comprobante").selectpicker('refresh');
-
+const limpiar = () => {
+  inputClient.selectedIndex = 0
+  inputSerie.value = ''
+  inputNumeroC.value = ''
+  marcarImpuesto()
+  inputTotalVenta.value = ''
+  remove(filasTablaVenta)
+  totalText.innerHTML = 0
+  //obtenemos la fecha actual
+  const now = new Date()
+  const day = ('0' + now.getDate()).slice(-2)
+  const month = ('0' + (now.getMonth() + 1)).slice(-2)
+  const today = now.getFullYear() + '-' + month + '-' + day
+  inputFecha.value = today
+  //marcamos el primer tipo_documento
+  inputTipoComprobante.selectedIndex = 2
 }
 
 //funcion mostrar formulario
-function mostrarform(flag){
-	limpiar();
-	if(flag){
-		$("#listadoregistros").hide();
-		$("#formularioregistros").show();
-		//$("#btnGuardar").prop("disabled",false);
-		$("#btnagregar").hide();
-		listarArticulos();
-
-		$("#btnGuardar").hide();
-		$("#btnCancelar").show();
-		detalles=0;
-		$("#btnAgregarArt").show();
-
-
-	}else{
-		$("#listadoregistros").show();
-		$("#formularioregistros").hide();
-		$("#btnagregar").show();
-	}
+const mostrarform = (flag) => {
+  limpiar()
+  if (flag) {
+    hide(listadoregistros)
+    show(formularioregistros)
+    hide(btnagregar)
+    listarArticulos()
+    hide(btnGuardar)
+    show(btnCancelar)
+    detalles = 0
+    show(btnAgregarArt)
+  } else {
+    show(listadoregistros)
+    hide(formularioregistros)
+    show(btnagregar, 'inline-block')
+  }
 }
 
 //cancelar form
-function cancelarform(){
-	limpiar();
-	mostrarform(false);
+const cancelarform = () => {
+  limpiar()
+  mostrarform(false)
 }
 
 //funcion listar
-function listar(){
-	tabla=$('#tbllistado').dataTable({
-		"aProcessing": true,//activamos el procedimiento del datatable
-		"aServerSide": true,//paginacion y filrado realizados por el server
-		dom: 'Bfrtip',//definimos los elementos del control de la tabla
-		buttons: [
-                  'copyHtml5',
-                  'excelHtml5',
-                  'csvHtml5',
-                  'pdf'
-		],
-		"ajax":
-		{
-			url:'../ajax/venta.php?op=listar',
-			type: "get",
-			dataType : "json",
-			error:function(e){
-				console.log(e.responseText);
-			}
-		},
-		"bDestroy":true,
-		"iDisplayLength":5,//paginacion
-		"order":[[0,"desc"]]//ordenar (columna, orden)
-	}).DataTable();
+const listar = () => {
+  //   if (tablaVenta) {
+  //     tableVentasHTML.innerHTML = ''
+  //   }
+  tablaVenta = new gridjs.Grid({
+    columns: [
+      {
+        name: 'Opciones',
+        formatter: (cell) => gridjs.html(cell),
+      },
+      'Fecha',
+      'Cliente',
+      'Usuario',
+      'Tipo',
+      'Número',
+      'Total',
+      {
+        name: 'Estado',
+        formatter: (cell) => gridjs.html(cell),
+      },
+    ],
+    server: {
+      url: '../ajax/venta.php?op=listar',
+      then: (data) =>
+        data.aaData.map((card) => [
+          card.op,
+          card.fecha,
+          card.clie,
+          card.user,
+          card.tipo,
+          card.numero,
+          card.total,
+          card.est,
+        ]),
+    },
+    search: true,
+    pagination: true,
+    sort: true,
+    language: {
+      search: {
+        placeholder: '🔍 Buscar...',
+      },
+      pagination: {
+        previous: 'Retroceder',
+        next: 'Avanzar',
+        showing: 'Mostrando',
+        results: () => 'resultados',
+        of: 'de',
+        to: 'a',
+      },
+    },
+  }).render(tableVentasHTML)
 }
 
-function listarArticulos(){
-	tabla=$('#tblarticulos').dataTable({
-		"aProcessing": true,//activamos el procedimiento del datatable
-		"aServerSide": true,//paginacion y filrado realizados por el server
-		dom: 'Bfrtip',//definimos los elementos del control de la tabla
-		buttons: [
-
-		],
-		"ajax":
-		{
-			url:'../ajax/venta.php?op=listarArticulos',
-			type: "get",
-			dataType : "json",
-			error:function(e){
-				console.log(e.responseText);
-			}
-		},
-		"bDestroy":true,
-		"iDisplayLength":5,//paginacion
-		"order":[[0,"desc"]]//ordenar (columna, orden)
-	}).DataTable();
+const listarArticulos = () => {
+  tablaArticulo = new gridjs.Grid({
+    columns: [
+      {
+        name: 'Opciones',
+        formatter: (cell) => gridjs.html(cell),
+      },
+      'Nombre',
+      'Categoría',
+      'Código',
+      'Stock',
+      'Precio',
+      {
+        name: 'Imagen',
+        formatter: (cell) => gridjs.html(cell),
+      },
+    ],
+    server: {
+      url: '../ajax/venta.php?op=listarArticulos',
+      then: (data) =>
+        data.aaData.map((card) => [
+          card.op,
+          card.name,
+          card.cat,
+          card.cod,
+          card.stock,
+          card.price,
+          card.image,
+        ]),
+    },
+    search: true,
+    pagination: true,
+    sort: true,
+    language: {
+      search: {
+        placeholder: '🔍 Buscar...',
+      },
+      pagination: {
+        previous: 'Retroceder',
+        next: 'Avanzar',
+        showing: 'Mostrando',
+        results: () => 'resultados',
+        of: 'de',
+        to: 'a',
+      },
+    },
+    style: {
+      table: {
+        width: '100%',
+      },
+    },
+  }).render(tableArticuloHTML)
 }
 //funcion para guardaryeditar
-function guardaryeditar(e){
-     e.preventDefault();//no se activara la accion predeterminada 
-     //$("#btnGuardar").prop("disabled",true);
-     var formData=new FormData($("#formulario")[0]);
-
-     $.ajax({
-     	url: "../ajax/venta.php?op=guardaryeditar",
-     	type: "POST",
-     	data: formData,
-     	contentType: false,
-     	processData: false,
-
-     	success: function(datos){
-     		bootbox.alert(datos);
-     		mostrarform(false);
-     		listar();
-     	}
-     });
-
-     limpiar();
+const guardaryeditar = (e) => {
+  e.preventDefault() //no se activara la accion predeterminada
+  const formData = new FormData(formulario)
+  fetch('../ajax/venta.php?op=guardaryeditar', {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => {
+      return response.text()
+    })
+    .then((data) => {
+      Toast.fire({
+        icon: 'success',
+        title: data,
+      })
+      mostrarform(false)
+      tablaVenta.forceRender()
+    })
 }
 
-function mostrar(idventa){
-	$.post("../ajax/venta.php?op=mostrar",{idventa : idventa},
-		function(data,status)
-		{
-			data=JSON.parse(data);
-			mostrarform(true);
-
-			$("#idcliente").val(data.idcliente);
-			$("#idcliente").selectpicker('refresh');
-			$("#tipo_comprobante").val(data.tipo_comprobante);
-			$("#tipo_comprobante").selectpicker('refresh');
-			$("#serie_comprobante").val(data.serie_comprobante);
-			$("#num_comprobante").val(data.num_comprobante);
-			$("#fecha_hora").val(data.fecha);
-			$("#impuesto").val(data.impuesto);
-			$("#idventa").val(data.idventa);
-			
-			//ocultar y mostrar los botones
-			$("#btnGuardar").hide();
-			$("#btnCancelar").show();
-			$("#btnAgregarArt").hide();
-		});
-	$.post("../ajax/venta.php?op=listarDetalle&id="+idventa,function(r){
-		$("#detalles").html(r);
-	});
-
+const mostrar = (idventa) => {
+  let formData = new FormData()
+  formData.append('idventa', idventa)
+  fetch('../ajax/venta.php?op=mostrar', {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
+      mostrarform(true)
+      inputClient.value = data.idcliente
+      inputTipoComprobante.value = data.tipo_comprobante
+      inputSerie.value = data.serie_comprobante
+      inputNumeroC.value = data.num_comprobante
+      inputFecha.value = data.fecha
+      inputImpuesto.value = data.impuesto
+      idventa.value = data.idventa
+      //ocultar y mostrar los botones
+      hide(btnGuardar)
+      show(btnCancelar)
+      hide(btnAgregarArt)
+    })
+  fetch('../ajax/venta.php?op=listarDetalle&id=' + idventa, {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => {
+      return response.text()
+    })
+    .then((data) => {
+      tablaDetalle.innerHTML = data
+    })
 }
-
 
 //funcion para desactivar
-function anular(idventa){
-	bootbox.confirm("¿Esta seguro de desactivar este dato?", function(result){
-		if (result) {
-			$.post("../ajax/venta.php?op=anular", {idventa : idventa}, function(e){
-				bootbox.alert(e);
-				tabla.ajax.reload();
-			});
-		}
-	})
+function anular(idventa) {
+  Swal.fire({
+    title: '¿Esta seguro de desactivar este dato?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Desactivar',
+    cancelButtonText: 'Cancelar',
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      let formData = new FormData()
+      formData.append('idventa', idventa)
+      fetch('../ajax/venta.php?op=anular', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => {
+          return response.text()
+        })
+        .then((data) => {
+          tablaVenta.forceRender()
+          Toast.fire({
+            icon: 'success',
+            title: data,
+          })
+        })
+    }
+  })
+}
+const marcarImpuesto = () => {
+  const tipo_comprobante =
+    inputTipoComprobante.options[inputTipoComprobante.selectedIndex].value
+  if (tipo_comprobante == 'Factura' || tipo_comprobante == 'Boleta') {
+    $('#impuesto').val(impuesto)
+  } else {
+    $('#impuesto').val('0')
+  }
+}
+hide(btnGuardar)
+inputTipoComprobante.addEventListener('change', marcarImpuesto)
+function agregarDetalle(idarticulo, articulo, precio_venta) {
+  var cantidad = 1
+  var descuento = 0
+
+  if (idarticulo != '') {
+    var subtotal = cantidad * precio_venta
+    var fila =
+      '<tr class="filas" id="fila' +
+      cont +
+      '">' +
+      '<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(' +
+      cont +
+      ')">X</button></td>' +
+      '<td><input type="hidden" name="idarticulo[]" value="' +
+      idarticulo +
+      '">' +
+      articulo +
+      '</td>' +
+      '<td><input type="number" name="cantidad[]" id="cantidad[]" value="' +
+      cantidad +
+      '"></td>' +
+      '<td><input type="number" name="precio_venta[]" id="precio_venta[]" value="' +
+      precio_venta +
+      '"></td>' +
+      '<td><input type="number" name="descuento[]" value="' +
+      descuento +
+      '"></td>' +
+      '<td><span id="subtotal' +
+      cont +
+      '" name="subtotal">' +
+      subtotal +
+      '</span></td>' +
+      '<td><button type="button" onclick="modificarSubtotales()" class="btn btn-info"><i class="fa fa-refresh"></i></button></td>' +
+      '</tr>'
+    cont++
+    detalles++
+    $('#detalles').append(fila)
+    modificarSubtotales()
+  } else {
+    alert('error al ingresar el detalle, revisar las datos del articulo ')
+  }
 }
 
-//declaramos variables necesarias para trabajar con las compras y sus detalles
-var impuesto=18;
-var cont=0;
-var detalles=0;
+function modificarSubtotales() {
+  var cant = document.getElementsByName('cantidad[]')
+  var prev = document.getElementsByName('precio_venta[]')
+  var desc = document.getElementsByName('descuento[]')
+  var sub = document.getElementsByName('subtotal')
 
-$("#btnGuardar").hide();
-$("#tipo_comprobante").change(marcarImpuesto);
+  for (var i = 0; i < cant.length; i++) {
+    var inpV = cant[i]
+    var inpP = prev[i]
+    var inpS = sub[i]
+    var des = desc[i]
 
-function marcarImpuesto(){
-	var tipo_comprobante=$("#tipo_comprobante option:selected").text();
-	if (tipo_comprobante=='Factura') {
-		$("#impuesto").val(impuesto);
-	}else{
-		$("#impuesto").val("0");
-	}
+    inpS.value = inpV.value * inpP.value - des.value
+    document.getElementsByName('subtotal')[i].innerHTML = inpS.value
+  }
+  calcularTotales()
 }
 
-function agregarDetalle(idarticulo,articulo,precio_venta){
-	var cantidad=1;
-	var descuento=0;
+function calcularTotales() {
+  var sub = document.getElementsByName('subtotal')
+  var total = 0.0
 
-	if (idarticulo!="") {
-		var subtotal=cantidad*precio_venta;
-		var fila='<tr class="filas" id="fila'+cont+'">'+
-        '<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle('+cont+')">X</button></td>'+
-        '<td><input type="hidden" name="idarticulo[]" value="'+idarticulo+'">'+articulo+'</td>'+
-        '<td><input type="number" name="cantidad[]" id="cantidad[]" value="'+cantidad+'"></td>'+
-        '<td><input type="number" name="precio_venta[]" id="precio_venta[]" value="'+precio_venta+'"></td>'+
-        '<td><input type="number" name="descuento[]" value="'+descuento+'"></td>'+
-        '<td><span id="subtotal'+cont+'" name="subtotal">'+subtotal+'</span></td>'+
-        '<td><button type="button" onclick="modificarSubtotales()" class="btn btn-info"><i class="fa fa-refresh"></i></button></td>'+
-		'</tr>';
-		cont++;
-		detalles++;
-		$('#detalles').append(fila);
-		modificarSubtotales();
-
-	}else{
-		alert("error al ingresar el detalle, revisar las datos del articulo ");
-	}
+  for (var i = 0; i < sub.length; i++) {
+    total += document.getElementsByName('subtotal')[i].value
+  }
+  $('#total').html('S/.' + total)
+  $('#total_venta').val(total)
+  evaluar()
 }
 
-function modificarSubtotales(){
-	var cant=document.getElementsByName("cantidad[]");
-	var prev=document.getElementsByName("precio_venta[]");
-	var desc=document.getElementsByName("descuento[]");
-	var sub=document.getElementsByName("subtotal");
-
-
-	for (var i = 0; i < cant.length; i++) {
-		var inpV=cant[i];
-		var inpP=prev[i];
-		var inpS=sub[i];
-		var des=desc[i];
-
-
-		inpS.value=(inpV.value*inpP.value)-des.value;
-		document.getElementsByName("subtotal")[i].innerHTML=inpS.value;
-	}
-
-	calcularTotales();
+function evaluar() {
+  if (detalles > 0) {
+    $('#btnGuardar').show()
+  } else {
+    $('#btnGuardar').hide()
+    cont = 0
+  }
 }
 
-function calcularTotales(){
-	var sub = document.getElementsByName("subtotal");
-	var total=0.0;
-
-	for (var i = 0; i < sub.length; i++) {
-		total += document.getElementsByName("subtotal")[i].value;
-	}
-	$("#total").html("S/." + total);
-	$("#total_venta").val(total);
-	evaluar();
+function eliminarDetalle(indice) {
+  $('#fila' + indice).remove()
+  calcularTotales()
+  detalles = detalles - 1
 }
 
-function evaluar(){
-
-	if (detalles>0) 
-	{
-		$("#btnGuardar").show();
-	}
-	else
-	{
-		$("#btnGuardar").hide();
-		cont=0;
-	}
-}
-
-function eliminarDetalle(indice){
-$("#fila"+indice).remove();
-calcularTotales();
-detalles=detalles-1;
-
-}
-
-init();
+init()

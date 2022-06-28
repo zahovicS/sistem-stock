@@ -30,6 +30,9 @@
 <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
 <!-- Sweet Alert -->
 <script src="../public/plugins/sweetalert2/sweetalert2.all.min.js"></script>
+<!-- Select2 -->
+<script src="../public/plugins/select2/js/select2.min.js"></script>
+<script src="../public/plugins/select2/js/i18n/es.js"></script>
 <!-- OPTIONAL SCRIPTS -->
 <script src="../public/plugins/chart.js/Chart.min.js"></script>
 <script src="./scripts/home.js"></script>

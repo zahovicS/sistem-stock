@@ -10,7 +10,7 @@ const inputNombre = document.querySelector('#nombre'),
   inputCodigoCategoria = document.querySelector('#idcategoria')
 
 //funcion que se ejecuta al inicio
-function init() {
+const init = () => {
   mostrarform(false)
   listar()
 
@@ -20,14 +20,14 @@ function init() {
 }
 
 //funcion limpiar
-function limpiar() {
+const limpiar = () => {
   inputCodigoCategoria.value = ''
   inputNombre.value = ''
   inputDescripcion.value = ''
 }
 
 //funcion mostrar formulario
-function mostrarform(flag) {
+const mostrarform = (flag) => {
   limpiar()
   if (flag) {
     hide(listadoregistros)
@@ -42,13 +42,13 @@ function mostrarform(flag) {
 }
 
 //cancelar form
-function cancelarform() {
+const cancelarform = () => {
   limpiar()
   mostrarform(false)
 }
 
 //funcion listar
-function listar() {
+const listar = () => {
   tablaCategoria = new gridjs.Grid({
     columns: [
       {
@@ -84,91 +84,105 @@ function listar() {
       },
     },
   }).render(tableCategoriaHTML)
-  //   $('#tbllistado')
-  //     .dataTable({
-  //       aProcessing: true, //activamos el procedimiento del datatable
-  //       aServerSide: true, //paginacion y filrado realizados por el server
-  //       dom: 'Bfrtip', //definimos los elementos del control de la tabla
-  //       buttons: ['copyHtml5', 'excelHtml5', 'csvHtml5', 'pdf'],
-  //       ajax: {
-  //         url: '../ajax/categoria.php?op=listar',
-  //         type: 'get',
-  //         dataType: 'json',
-  //         error: function (e) {
-  //           console.log(e.responseText)
-  //         },
-  //       },
-  //       bDestroy: true,
-  //       iDisplayLength: 5, //paginacion
-  //       order: [[0, 'desc']], //ordenar (columna, orden)
-  //     })
-  //     .DataTable()
 }
 //funcion para guardaryeditar
-function guardaryeditar(e) {
+const guardaryeditar = (e) => {
   e.preventDefault() //no se activara la accion predeterminada
-  $('#btnGuardar').prop('disabled', true)
-  var formData = new FormData($('#formulario')[0])
-
-  $.ajax({
-    url: '../ajax/categoria.php?op=guardaryeditar',
-    type: 'POST',
-    data: formData,
-    contentType: false,
-    processData: false,
-
-    success: function (datos) {
-      bootbox.alert(datos)
-      mostrarform(false)
-      tabla.ajax.reload()
-    },
+  btnGuardar.disabled = true
+  const formData = new FormData(formulario)
+  fetch('../ajax/categoria.php?op=guardaryeditar', {
+    method: 'POST',
+    body: formData,
   })
-
+    .then((response) => {
+      return response.text()
+    })
+    .then((data) => {
+      Toast.fire({
+        icon: 'success',
+        title: data,
+      })
+      mostrarform(false)
+      tablaCategoria.forceRender()
+    })
   limpiar()
 }
 
-function mostrar(idcategoria) {
-  $.post(
-    '../ajax/categoria.php?op=mostrar',
-    { idcategoria: idcategoria },
-    function (data, status) {
-      data = JSON.parse(data)
+const mostrar = (idcategoria) => {
+  let formData = new FormData()
+  formData.append('idcategoria', idcategoria)
+  fetch('../ajax/categoria.php?op=mostrar', {
+    method: 'POST',
+    body: formData,
+  })
+    .then((response) => {
+      return response.json()
+    })
+    .then((data) => {
       mostrarform(true)
-
-      $('#nombre').val(data.nombre)
-      $('#descripcion').val(data.descripcion)
-      $('#idcategoria').val(data.idcategoria)
-    }
-  )
+      inputNombre.value = data.nombre
+      inputDescripcion.value = data.descripcion
+      inputCodigoCategoria.value = data.idcategoria
+    })
 }
 
 //funcion para desactivar
-function desactivar(idcategoria) {
-  bootbox.confirm('¿Esta seguro de desactivar este dato?', function (result) {
-    if (result) {
-      $.post(
-        '../ajax/categoria.php?op=desactivar',
-        { idcategoria: idcategoria },
-        function (e) {
-          bootbox.alert(e)
-          tabla.ajax.reload()
-        }
-      )
+const desactivar = (idcategoria) => {
+  Swal.fire({
+    title: '¿Esta seguro de desactivar este dato?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Desactivar',
+    cancelButtonText: 'Cancelar',
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      let formData = new FormData()
+      formData.append('idcategoria', idcategoria)
+      fetch('../ajax/categoria.php?op=desactivar', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => {
+          return response.text()
+        })
+        .then((data) => {
+          tablaCategoria.forceRender()
+          Toast.fire({
+            icon: 'success',
+            title: data,
+          })
+        })
     }
   })
 }
 
-function activar(idcategoria) {
-  bootbox.confirm('¿Esta seguro de activar este dato?', function (result) {
-    if (result) {
-      $.post(
-        '../ajax/categoria.php?op=activar',
-        { idcategoria: idcategoria },
-        function (e) {
-          bootbox.alert(e)
-          tabla.ajax.reload()
-        }
-      )
+const activar = (idcategoria) => {
+  Swal.fire({
+    title: '¿Esta seguro de activar este dato?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Activar',
+    cancelButtonText: 'Cancelar',
+  }).then((result) => {
+    /* Read more about isConfirmed, isDenied below */
+    if (result.isConfirmed) {
+      let formData = new FormData()
+      formData.append('idcategoria', idcategoria)
+      fetch('../ajax/categoria.php?op=activar', {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => {
+          return response.text()
+        })
+        .then((data) => {
+          tablaCategoria.forceRender()
+          Toast.fire({
+            icon: 'success',
+            title: data,
+          })
+        })
     }
   })
 }
