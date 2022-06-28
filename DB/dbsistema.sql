@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost:3306
--- Tiempo de generación: 27-06-2022 a las 18:05:15
+-- Tiempo de generación: 28-06-2022 a las 06:14:54
 -- Versión del servidor: 5.7.33
 -- Versión de PHP: 7.4.19
 
@@ -43,10 +43,11 @@ CREATE TABLE `articulo` (
 --
 
 INSERT INTO `articulo` (`idarticulo`, `idcategoria`, `codigo`, `nombre`, `stock`, `descripcion`, `imagen`, `condicion`) VALUES
-(6, 7, '00458', 'Ligheter', 25, 'modelo lighter de MICRONICS', '1535417422.jpg', 1),
-(7, 9, '0040kl', 'disco solido', 58, 'disco marca KINGSTON', '1535417431.jfif', 1),
+(6, 7, '00458', 'Teclado Ligheter', 19, 'modelo lighter de MICRONICS', '1535417422.jpg', 1),
+(7, 9, '0040kl', 'disco solido', 57, 'disco marca KINGSTON', '1535417431.jfif', 1),
 (8, 9, 'HJL-OP', 'DATATRABEL', 107, 'usb de 15gb', '1535417452.jpg', 1),
-(9, 8, '2131231231', 'pc gamer', 2, 'pc gamer de rtx 3050', '1656267987.jpg', 1);
+(9, 8, '2131231231', 'pc gamer', 2, 'pc gamer de rtx 3050', '1656267987.jpg', 1),
+(10, 7, '21', 'dsds', 22, 'sdadasd', '1656369866.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -69,7 +70,8 @@ INSERT INTO `categoria` (`idcategoria`, `nombre`, `descripcion`, `condicion`) VA
 (7, 'TECLADOS', 'teclados gamers', 1),
 (8, 'CPU\'s', 'cpus gamers de alta categoria', 1),
 (9, 'DISCOS DUROS', 'disco solidos', 1),
-(12, 'MONITORES', 'monitores gamers', 1);
+(12, 'MONITORES', 'monitores gamers', 1),
+(13, 'Mouses', 'gamers', 1);
 
 -- --------------------------------------------------------
 
@@ -146,7 +148,14 @@ INSERT INTO `detalle_venta` (`iddetalle_venta`, `idventa`, `idarticulo`, `cantid
 (25, 21, 6, 1, '30.00', '5.00'),
 (26, 22, 6, 1, '30.00', '0.00'),
 (27, 22, 7, 1, '300.00', '0.00'),
-(28, 22, 8, 1, '30.00', '0.00');
+(28, 22, 8, 1, '30.00', '0.00'),
+(29, 23, 6, 1, '30.00', '0.00'),
+(30, 24, 7, 1, '300.00', '0.00'),
+(31, 25, 6, 1, '30.00', '0.00'),
+(32, 26, 6, 1, '30.00', '0.00'),
+(33, 27, 6, 1, '30.00', '0.00'),
+(34, 28, 6, 1, '30.00', '0.00'),
+(35, 29, 6, 1, '30.00', '0.00');
 
 --
 -- Disparadores `detalle_venta`
@@ -309,11 +318,13 @@ CREATE TABLE `venta` (
   `idcliente` int(11) NOT NULL,
   `idusuario` int(11) NOT NULL,
   `tipo_comprobante` varchar(20) NOT NULL,
-  `serie_comprobante` varchar(7) DEFAULT NULL,
-  `num_comprobante` varchar(10) NOT NULL,
+  `serie` char(6) DEFAULT NULL,
+  `num_comprobante` varchar(10) DEFAULT NULL,
   `fecha_hora` datetime NOT NULL,
   `impuesto` decimal(4,2) DEFAULT NULL,
   `total_venta` decimal(11,2) DEFAULT NULL,
+  `m_pago` char(3) NOT NULL DEFAULT 'C',
+  `observacion` varchar(100) DEFAULT NULL,
   `estado` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -321,20 +332,27 @@ CREATE TABLE `venta` (
 -- Volcado de datos para la tabla `venta`
 --
 
-INSERT INTO `venta` (`idventa`, `idcliente`, `idusuario`, `tipo_comprobante`, `serie_comprobante`, `num_comprobante`, `fecha_hora`, `impuesto`, `total_venta`, `estado`) VALUES
-(10, 8, 1, 'Boleta', '001', '0001', '2018-01-08 00:00:00', '0.00', '11800.15', 'Aceptado'),
-(11, 8, 1, 'Factura', '001', '0002', '2018-03-05 00:00:00', '18.00', '3800.00', 'Aceptado'),
-(12, 8, 1, 'Ticket', '001', '0001', '2018-04-17 00:00:00', '0.00', '1000.00', 'Aceptado'),
-(13, 8, 1, 'Factura', '001', '0002', '2018-06-09 00:00:00', '18.00', '240.00', 'Aceptado'),
-(14, 8, 1, 'Factura', '20', '30', '2018-07-24 00:00:00', '18.00', '490.00', 'Aceptado'),
-(15, 8, 1, 'Factura', '001', '0008', '2018-08-26 00:00:00', '18.00', '20.00', 'Aceptado'),
-(16, 8, 1, 'Boleta', '001', '0070', '2018-08-26 00:00:00', '0.00', '245.00', 'Aceptado'),
-(17, 8, 1, 'Factura', '002', '0004', '2018-08-26 00:00:00', '18.00', '245.00', 'Aceptado'),
-(18, 8, 1, 'Boleta', '001', '0006', '2018-08-26 00:00:00', '0.00', '30.00', 'Aceptado'),
-(19, 8, 1, 'Factura', '001', '0009', '2018-08-26 00:00:00', '18.00', '248.00', 'Aceptado'),
-(20, 8, 1, 'Factura', '001', '002', '2018-08-26 00:00:00', '18.00', '50.00', 'Aceptado'),
-(21, 8, 1, 'Factura', '001', '0004', '2018-08-27 00:00:00', '18.00', '25.00', 'Aceptado'),
-(22, 11, 1, 'Ticket', '001', '0004', '2018-08-27 00:00:00', '0.00', '360.00', 'Aceptado');
+INSERT INTO `venta` (`idventa`, `idcliente`, `idusuario`, `tipo_comprobante`, `serie`, `num_comprobante`, `fecha_hora`, `impuesto`, `total_venta`, `m_pago`, `observacion`, `estado`) VALUES
+(10, 8, 1, 'Boleta', 'B001', '1', '2018-01-08 00:00:00', '0.00', '11800.15', 'C', NULL, 'Aceptado'),
+(11, 8, 1, 'Factura', 'F001', '1', '2018-03-05 00:00:00', '18.00', '3800.00', 'C', NULL, 'Aceptado'),
+(12, 8, 1, 'Ticket', 'TK01', '1', '2018-04-17 00:00:00', '0.00', '1000.00', 'C', NULL, 'Aceptado'),
+(13, 8, 1, 'Factura', 'F001', '2', '2018-06-09 00:00:00', '18.00', '240.00', 'C', NULL, 'Aceptado'),
+(14, 8, 1, 'Factura', 'F001', '3', '2018-07-24 00:00:00', '18.00', '490.00', 'C', NULL, 'Aceptado'),
+(15, 8, 1, 'Factura', 'F001', '4', '2018-08-26 00:00:00', '18.00', '20.00', 'C', NULL, 'Aceptado'),
+(16, 8, 1, 'Boleta', 'B001', '2', '2018-08-26 00:00:00', '0.00', '245.00', 'C', NULL, 'Aceptado'),
+(17, 8, 1, 'Factura', 'F001', '5', '2018-08-26 00:00:00', '18.00', '245.00', 'C', NULL, 'Aceptado'),
+(18, 8, 1, 'Boleta', 'B001', '3', '2018-08-26 00:00:00', '0.00', '30.00', 'C', NULL, 'Aceptado'),
+(19, 8, 1, 'Factura', 'F001', '6', '2018-08-26 00:00:00', '18.00', '248.00', 'C', NULL, 'Aceptado'),
+(20, 8, 1, 'Factura', 'F001', '7', '2018-08-26 00:00:00', '18.00', '50.00', 'C', NULL, 'Aceptado'),
+(21, 8, 1, 'Factura', 'F001', '8', '2018-08-27 00:00:00', '18.00', '25.00', 'C', NULL, 'Aceptado'),
+(22, 11, 1, 'Ticket', 'TK01', '2', '2018-08-27 00:00:00', '0.00', '360.00', 'C', NULL, 'Aceptado'),
+(23, 8, 1, 'Factura', 'F001', '9', '2022-06-28 00:00:00', '18.00', '30.00', 'C', NULL, 'Aceptado'),
+(24, 8, 1, 'Ticket', 'TK01', '3', '2022-06-28 00:00:00', '0.00', '0.00', 'C', NULL, 'Aceptado'),
+(25, 8, 1, 'Ticket', 'TK01', '4', '2022-06-28 00:00:00', '0.00', '30.00', 'C', NULL, 'Aceptado'),
+(26, 8, 1, 'Ticket', 'TK01', '5', '2022-06-28 00:00:00', '0.00', '30.00', 'C', NULL, 'Aceptado'),
+(27, 8, 1, 'Boleta', 'B001', '4', '2022-06-28 00:00:00', '18.00', '30.00', 'C', NULL, 'Aceptado'),
+(28, 8, 1, 'Ticket', 'TK01', '6', '2022-06-28 00:00:00', '0.00', '30.00', 'C', NULL, 'Aceptado'),
+(29, 8, 1, 'Factura', 'F001', '10', '2022-06-28 00:00:00', '18.00', '30.00', 'C', NULL, 'Aceptado');
 
 --
 -- Índices para tablas volcadas
@@ -422,13 +440,13 @@ ALTER TABLE `venta`
 -- AUTO_INCREMENT de la tabla `articulo`
 --
 ALTER TABLE `articulo`
-  MODIFY `idarticulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `idarticulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `idcategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `idcategoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_ingreso`
@@ -440,7 +458,7 @@ ALTER TABLE `detalle_ingreso`
 -- AUTO_INCREMENT de la tabla `detalle_venta`
 --
 ALTER TABLE `detalle_venta`
-  MODIFY `iddetalle_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `iddetalle_venta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `ingreso`
@@ -476,7 +494,7 @@ ALTER TABLE `usuario_permiso`
 -- AUTO_INCREMENT de la tabla `venta`
 --
 ALTER TABLE `venta`
-  MODIFY `idventa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `idventa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Restricciones para tablas volcadas

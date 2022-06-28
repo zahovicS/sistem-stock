@@ -9,8 +9,6 @@ const btnGuardar = document.querySelector('#btnGuardar'),
   formulario = document.querySelector('#formulario'),
   inputClient = document.querySelector('#idcliente'),
   inputTipoComprobante = document.querySelector('#tipo_comprobante'),
-  inputSerie = document.querySelector('#serie_comprobante'),
-  inputNumeroC = document.querySelector('#num_comprobante'),
   inputImpuesto = document.querySelector('#impuesto'),
   inputTotalVenta = document.querySelector('#total_venta'),
   filasTablaVenta = document.querySelectorAll('.filas'),
@@ -50,13 +48,12 @@ const init = () => {
 
 //funcion limpiar
 const limpiar = () => {
+  remove(document.querySelectorAll('.filas'))
   inputClient.selectedIndex = 0
-  inputSerie.value = ''
-  inputNumeroC.value = ''
   marcarImpuesto()
   inputTotalVenta.value = ''
-  remove(filasTablaVenta)
-  totalText.innerHTML = 0
+  document.querySelector('#total').innerHTML = 'S/.0.00'
+  inputTotalVenta.value = 0
   //obtenemos la fecha actual
   const now = new Date()
   const day = ('0' + now.getDate()).slice(-2)
@@ -76,7 +73,7 @@ const mostrarform = (flag) => {
     hide(btnagregar)
     listarArticulos()
     hide(btnGuardar)
-    show(btnCancelar)
+    show(btnCancelar, 'inline-block')
     detalles = 0
     show(btnAgregarArt)
   } else {
@@ -94,9 +91,6 @@ const cancelarform = () => {
 
 //funcion listar
 const listar = () => {
-  //   if (tablaVenta) {
-  //     tableVentasHTML.innerHTML = ''
-  //   }
   tablaVenta = new gridjs.Grid({
     columns: [
       {
@@ -107,7 +101,7 @@ const listar = () => {
       'Cliente',
       'Usuario',
       'Tipo',
-      'Número',
+      'Serie-numero',
       'Total',
       {
         name: 'Estado',
@@ -144,10 +138,16 @@ const listar = () => {
         to: 'a',
       },
     },
+    style: {
+      table: {
+        width: '100%',
+      },
+    },
   }).render(tableVentasHTML)
 }
 
 const listarArticulos = () => {
+  tableArticuloHTML.innerHTML = ''
   tablaArticulo = new gridjs.Grid({
     columns: [
       {
@@ -235,8 +235,6 @@ const mostrar = (idventa) => {
       mostrarform(true)
       inputClient.value = data.idcliente
       inputTipoComprobante.value = data.tipo_comprobante
-      inputSerie.value = data.serie_comprobante
-      inputNumeroC.value = data.num_comprobante
       inputFecha.value = data.fecha
       inputImpuesto.value = data.impuesto
       idventa.value = data.idventa
@@ -244,16 +242,16 @@ const mostrar = (idventa) => {
       hide(btnGuardar)
       show(btnCancelar)
       hide(btnAgregarArt)
-    })
-  fetch('../ajax/venta.php?op=listarDetalle&id=' + idventa, {
-    method: 'POST',
-    body: formData,
-  })
-    .then((response) => {
-      return response.text()
-    })
-    .then((data) => {
-      tablaDetalle.innerHTML = data
+      fetch('../ajax/venta.php?op=listarDetalle&id=' + idventa, {
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => {
+          return response.text()
+        })
+        .then((data) => {
+          tablaDetalle.innerHTML = data
+        })
     })
 }
 
@@ -291,38 +289,38 @@ const marcarImpuesto = () => {
   const tipo_comprobante =
     inputTipoComprobante.options[inputTipoComprobante.selectedIndex].value
   if (tipo_comprobante == 'Factura' || tipo_comprobante == 'Boleta') {
-    $('#impuesto').val(impuesto)
+    inputImpuesto.value = impuesto
   } else {
-    $('#impuesto').val('0')
+    inputImpuesto.value = 0
   }
 }
 hide(btnGuardar)
 inputTipoComprobante.addEventListener('change', marcarImpuesto)
-function agregarDetalle(idarticulo, articulo, precio_venta) {
-  var cantidad = 1
-  var descuento = 0
+const agregarDetalle = (idarticulo, articulo, precio_venta) => {
+  let cantidad = 1
+  let descuento = 0
 
   if (idarticulo != '') {
-    var subtotal = cantidad * precio_venta
-    var fila =
+    const subtotal = cantidad * precio_venta
+    let fila =
       '<tr class="filas" id="fila' +
       cont +
       '">' +
       '<td><button type="button" class="btn btn-danger" onclick="eliminarDetalle(' +
       cont +
-      ')">X</button></td>' +
-      '<td><input type="hidden" name="idarticulo[]" value="' +
+      ')"><i class="fas fa-trash-alt"></i></button></td>' +
+      '<td><input type="hidden" name="idarticulo[]" class="form-control form-control-border border-width-2" value="' +
       idarticulo +
       '">' +
       articulo +
       '</td>' +
-      '<td><input type="number" name="cantidad[]" id="cantidad[]" value="' +
+      '<td><input type="number" name="cantidad[]" oninput="modificarSubtotales()"  class="form-control form-control-border border-width-2" id="cantidad[]" value="' +
       cantidad +
       '"></td>' +
-      '<td><input type="number" name="precio_venta[]" id="precio_venta[]" value="' +
+      '<td><input type="number" name="precio_venta[]" oninput="modificarSubtotales()" class="form-control form-control-border border-width-2" id="precio_venta[]" value="' +
       precio_venta +
       '"></td>' +
-      '<td><input type="number" name="descuento[]" value="' +
+      '<td><input type="number" name="descuento[]" oninput="modificarSubtotales()" class="form-control form-control-border border-width-2" value="' +
       descuento +
       '"></td>' +
       '<td><span id="subtotal' +
@@ -330,10 +328,10 @@ function agregarDetalle(idarticulo, articulo, precio_venta) {
       '" name="subtotal">' +
       subtotal +
       '</span></td>' +
-      '<td><button type="button" onclick="modificarSubtotales()" class="btn btn-info"><i class="fa fa-refresh"></i></button></td>' +
       '</tr>'
     cont++
     detalles++
+    // tablaDetalle.append(fila)
     $('#detalles').append(fila)
     modificarSubtotales()
   } else {
@@ -341,17 +339,17 @@ function agregarDetalle(idarticulo, articulo, precio_venta) {
   }
 }
 
-function modificarSubtotales() {
-  var cant = document.getElementsByName('cantidad[]')
-  var prev = document.getElementsByName('precio_venta[]')
-  var desc = document.getElementsByName('descuento[]')
-  var sub = document.getElementsByName('subtotal')
+const modificarSubtotales = () => {
+  let cant = document.getElementsByName('cantidad[]')
+  let prev = document.getElementsByName('precio_venta[]')
+  let desc = document.getElementsByName('descuento[]')
+  let sub = document.getElementsByName('subtotal')
 
-  for (var i = 0; i < cant.length; i++) {
-    var inpV = cant[i]
-    var inpP = prev[i]
-    var inpS = sub[i]
-    var des = desc[i]
+  for (let i = 0; i < cant.length; i++) {
+    const inpV = cant[i]
+    const inpP = prev[i]
+    const inpS = sub[i]
+    const des = desc[i]
 
     inpS.value = inpV.value * inpP.value - des.value
     document.getElementsByName('subtotal')[i].innerHTML = inpS.value
@@ -359,31 +357,44 @@ function modificarSubtotales() {
   calcularTotales()
 }
 
-function calcularTotales() {
-  var sub = document.getElementsByName('subtotal')
-  var total = 0.0
+const calcularTotales = () => {
+  const sub = document.getElementsByName('subtotal')
+  let total = 0.0
 
-  for (var i = 0; i < sub.length; i++) {
+  for (let i = 0; i < sub.length; i++) {
     total += document.getElementsByName('subtotal')[i].value
   }
-  $('#total').html('S/.' + total)
-  $('#total_venta').val(total)
+  document.querySelector('#total').innerHTML = 'S/.' + total
+  inputTotalVenta.value = total
   evaluar()
 }
 
-function evaluar() {
+const evaluar = () => {
   if (detalles > 0) {
-    $('#btnGuardar').show()
+    show(btnGuardar, 'inline-block')
   } else {
-    $('#btnGuardar').hide()
+    hide(btnGuardar)
     cont = 0
   }
 }
 
-function eliminarDetalle(indice) {
-  $('#fila' + indice).remove()
+const eliminarDetalle = (indice) => {
+  document.querySelector('#fila' + indice).remove()
   calcularTotales()
   detalles = detalles - 1
 }
-
+// const verVenta = (tipo) => {
+//   let formData = new FormData()
+//   formData.append('tipo_comprobante', tipo)
+//   fetch('../ajax/venta.php?op=contarVentas', {
+//     method: 'POST',
+//     body: formData,
+//   })
+//     .then((response) => {
+//       return response.json()
+//     })
+//     .then((data) => {
+//       console.log(data)
+//     })
+// }
 init()

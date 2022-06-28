@@ -60,7 +60,7 @@ if (!isset($_SESSION['nombre'])) {
                                     <input class="form-control form-control-border border-width-2" type="date"
                                         name="fecha_hora" id="fecha_hora" required>
                                 </div>
-                                <div class="form-group col-lg-6">
+                                <div class="form-group col-lg-3">
                                     <label for="">Tipo Comprobante(*): </label>
                                     <select name="tipo_comprobante" id="tipo_comprobante"
                                         class="form-control form-control-border border-width-2 selectpicker" required>
@@ -69,7 +69,15 @@ if (!isset($_SESSION['nombre'])) {
                                         <option value="Ticket">Ticket</option>
                                     </select>
                                 </div>
-                                <div class="form-group col-lg-2">
+                                <div class="form-group col-lg-3">
+                                    <label for="">Tipo pago(*): </label>
+                                    <select name="tipo_pago" id="tipo_pago"
+                                        class="form-control form-control-border border-width-2 selectpicker" required>
+                                        <option value="C">Contado</option>
+                                        <option value="T">Tarjeta</option>
+                                    </select>
+                                </div>
+                                <!-- <div class="form-group col-lg-2">
                                     <label for="">Serie: </label>
                                     <input class="form-control form-control-border border-width-2" type="text"
                                         name="serie_comprobante" id="serie_comprobante" maxlength="7"
@@ -80,42 +88,41 @@ if (!isset($_SESSION['nombre'])) {
                                     <input class="form-control form-control-border border-width-2" type="text"
                                         name="num_comprobante" id="num_comprobante" maxlength="10" placeholder="Número"
                                         required>
-                                </div>
+                                </div> -->
                                 <div class="form-group col-lg-2">
                                     <label for="">Impuesto: </label>
                                     <input class="form-control form-control-border border-width-2" type="text"
-                                        name="impuesto" id="impuesto" value="0">
+                                        name="impuesto" id="impuesto" value="0" readonly>
                                 </div>
+                                <div class="form-group col-lg-4">
+                                    <label for="">Observación: </label>
+                                    <textarea cols="30" rows="1" class="form-control form-control-border border-width-2"
+                                        name="observacion" id="observacion"></textarea>
+                                </div>
+
                             </div>
                             <div class="form-group col-12 px-0">
-                                <a data-toggle="modal" href="#myModal">
-                                    <button id="btnAgregarArt" type="button" class="btn btn-primary"><span
-                                            class="fa fa-plus"></span>Agregar Articulos</button>
-                                </a>
+                                <button data-toggle="modal" data-target="#myModal" id="btnAgregarArt" type="button"
+                                    class="btn btn-primary"><span class="fa fa-plus"></span>Agregar Articulos</button>
                             </div>
                             <div class="form-group col-lg-12 col-md-12 col-xs-12 px-0">
-                                <table id="detalles"
-                                    class="table table-striped table-bordered table-condensed table-hover">
-                                    <thead style="background-color:#A9D0F5">
-                                        <th>Opciones</th>
-                                        <th>Articulo</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio Venta</th>
-                                        <th>Descuento</th>
-                                        <th>Subtotal</th>
+                                <table id="detalles" class="table table-bordered table-condensed">
+                                    <thead style="background-color:#E2EFFB">
+                                        <th style="width: 6%;">Opciones</th>
+                                        <th>Producto</th>
+                                        <th style="width: 15%;">Cantidad</th>
+                                        <th style="width: 15%;">Precio Venta</th>
+                                        <th style="width: 15%;">Descuento</th>
+                                        <th style="width: 10%;">Subtotal</th>
                                     </thead>
                                     <tfoot>
-                                        <th>TOTAL</th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
+                                        <th colspan="5">TOTAL</th>
                                         <th>
                                             <h4 id="total">S/. 0.00</h4><input type="hidden" name="total_venta"
                                                 id="total_venta">
                                         </th>
                                     </tfoot>
-                                    <tbody>
+                                    <tbody id="cuerpoTablaVenta">
 
                                     </tbody>
                                 </table>
