@@ -15,15 +15,6 @@ if (!isset($_SESSION['nombre'])) {
 
   if ($_SESSION['ventas'] == 1) {
 
-    //establecemos los datos de la empresa
-    $logo = "logo.png";
-    $ext_logo = "png";
-    $empresa = "EMPRESA S.A.C.";
-    $documento = "100404235001";
-    $direccion = "Calle los alpes 120";
-    $telefono = "00000000";
-    $email = "mail@gmail.com";
-
     //obtenemos los datos de la cabecera de la venta actual
     require_once "../modelos/Venta.php";
     $venta = new Venta();
@@ -49,7 +40,7 @@ if (!isset($_SESSION['nombre'])) {
     $con_letra = strtoupper($V->ValorEnLetras($ventaCabecera->total_venta, " " . NOMBRE_MONEDA_EMPRESA));
     // dd($ventaCabecera);
     //PDF de la factura
-    require_once("Factura.php");
+    require_once("PDF/comprobante.php");
     $view = ob_get_clean();
     $dompdf = new Dompdf();
     $dompdf->setPaper(array(0, 0, 226.77, 226.77));
