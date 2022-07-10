@@ -80,3 +80,8 @@ class Venta
 		return ejecutarConsulta($sql);
 	}
 }
+
+
+// foreach ($result as $key => $value) {
+// 	$result[$key]["detalle"] = Order::where(..,$value["data"]->id_order)
+// }
